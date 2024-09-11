@@ -1,0 +1,130 @@
+package partials
+
+import (
+	"github.com/kevin07696/ecommerce/templates/models"
+	"strings"
+)
+
+templ ButtonHandler(form string, button models.Button) {
+	switch button.GetOpts().GetTemplate() {
+		case "solid-rounded":
+			@SolidRounded(form, button)
+		default:
+			@Basic(form, button)
+	}
+}
+
+templ SolidRounded(form string, button models.Button) {
+	@btn(button, form, "rounded-md outline-none bg-slate-300 text-[1rem] text-center font-sans text-slate-700 p-[0.375rem]")
+}
+
+templ Basic(form string, button models.Button) {
+	@btn(button, form, "box-border border-2 border-solid border-white p-2 w-full")
+}
+
+func AddParamsToGetURL(url string, params string) string {
+	inputNames := strings.Split(params, ",")
+	/*
+		GET Url:			url?username={{username}}&email={{email}}&otp={{otp}}
+		Parameter Request:	username, email, otp
+		Description:		url + ? + length of each parameter +
+			(- comma + &)*(num of params - 1) + (num of params)*(={{}})
+	*/
+	capacity := len(url) + 1 + len(params) + len(inputNames)*5
+	bytes := make([]byte, 0, capacity)
+	left := []byte("={{")
+	right := []byte("}}")
+	bytes = append(bytes, url...)
+	bytes = append(bytes, 63)
+	username := strings.TrimSpace(inputNames[0])
+	bytes = append(bytes, username...)
+	bytes = append(bytes, left...)
+	bytes = append(bytes, username...)
+	bytes = append(bytes, right...)
+
+	for i := 1; i < len(inputNames); i++ {
+		bytes = append(bytes, 38)
+		username = strings.TrimSpace(inputNames[i])
+		bytes = append(bytes, username...)
+		bytes = append(bytes, left...)
+		bytes = append(bytes, username...)
+		bytes = append(bytes, right...)
+	}
+	return string(bytes)
+}
+
+func ToHxInclude(params string) string {
+	// Using hx-params:		email, username, otp
+	// Using hx-include:	input[name='email'], input[name='username']
+	inputNames := strings.Split(params, ",")
+	inputPrefix := []byte("input[name='")
+	inputSuffix := []byte("']")
+	commaSpace := []byte(", ")
+	capacity := len(params) + len(inputNames)*(len(inputPrefix)+len(inputSuffix)+1)
+	bytes := make([]byte, 0, capacity)
+
+	inputName := strings.TrimSpace(inputNames[0])
+	bytes = append(bytes, inputPrefix...)
+	bytes = append(bytes, inputName...)
+	bytes = append(bytes, inputSuffix...)
+
+	for i := 1; i < len(inputNames); i++ {
+		inputName = strings.TrimSpace(inputNames[i])
+		bytes = append(bytes, commaSpace...)
+		bytes = append(bytes, inputPrefix...)
+		bytes = append(bytes, inputName...)
+		bytes = append(bytes, inputSuffix...)
+	}
+	return string(bytes)
+}
+
+templ btn(btn models.Button, form, style string) {
+	switch btn.GetOpts().GetRequestOpts().GetMethod() {
+		case "POST":
+			<button
+				form={ form }
+				hx-params={ btn.GetOpts().GetRequestOpts().GetParams() }
+				hx-post={ btn.GetOpts().GetRequestOpts().GetURL() }
+				hx-swap={ btn.GetOpts().GetRequestOpts().GetSwap() }
+				hx-target={ btn.GetOpts().GetRequestOpts().GetTarget() }
+				type={ btn.GetOpts().GetTyp() }
+				class={ style, btn.GetOpts().GetStyle() }
+			>{ btn.GetName() }</button>
+		case "GET":
+			<button
+				form={ form }
+				hx-ext={ "path-params" }
+				hx-include={ ToHxInclude(btn.GetOpts().GetRequestOpts().GetParams()) }
+				hx-get={ AddParamsToGetURL(btn.GetOpts().GetRequestOpts().GetURL(), btn.GetOpts().GetRequestOpts().GetParams()) }
+				hx-swap={ btn.GetOpts().GetRequestOpts().GetSwap() }
+				hx-target={ btn.GetOpts().GetRequestOpts().GetTarget() }
+				type={ btn.GetOpts().GetTyp() }
+				class={ style, btn.GetOpts().GetStyle() }
+			>{ btn.GetName() }</button>
+		case "UPDATE":
+			<button
+				form={ form }
+				hx-params={ btn.GetOpts().GetRequestOpts().GetParams() }
+				hx-update={ btn.GetOpts().GetRequestOpts().GetURL() }
+				hx-swap={ btn.GetOpts().GetRequestOpts().GetSwap() }
+				hx-target={ btn.GetOpts().GetRequestOpts().GetTarget() }
+				type={ btn.GetOpts().GetTyp() }
+				class={ style, btn.GetOpts().GetStyle() }
+			>{ btn.GetName() }</button>
+		case "DELETE":
+			<button
+				form={ form }
+				hx-params={ btn.GetOpts().GetRequestOpts().GetParams() }
+				hx-delete={ btn.GetOpts().GetRequestOpts().GetURL() }
+				hx-swap={ btn.GetOpts().GetRequestOpts().GetSwap() }
+				hx-target={ btn.GetOpts().GetRequestOpts().GetTarget() }
+				type={ btn.GetOpts().GetTyp() }
+				class={ style, btn.GetOpts().GetStyle() }
+			>{ btn.GetName() }</button>
+		default:
+			<button
+				type={ btn.GetOpts().GetTyp() }
+				class={ style, btn.GetOpts().GetStyle() }
+			>{ btn.GetName() }</button>
+	}
+}

@@ -1,0 +1,65 @@
+package partials
+
+import "github.com/kevin07696/ecommerce/templates/models"
+
+templ DefaultInput(form, bgColor string, inp models.Input) {
+	<div class={ "flex flex-col items-stretch *:mt-2", bgColor }>
+		<div
+			class="group font-sans text-[1.2rem] 
+			bg-inherit relative flex flex-row h-[3rem] items-stretch mt-4
+			transition-all duration-200 ease-in
+			*:transition-all *:duration-200 *:ease-in
+			box-border *:box-border
+			border-2 border-slate-300 border-solid rounded-[0.5rem] *:outline-none
+
+			hover:border-slate-400 
+			has-[:focus]:border-slate-50
+
+			has-[:invalid]:border-red-400"
+		>
+			<input
+				type={ inp.GetOpts().GetTyp() }
+				id={ inp.GetId() }
+				name={ inp.GetName() }
+				form={ form }
+				pattern={ inp.GetOpts().GetPattern() }
+				autocomplete={ inp.GetOpts().GetFill() }
+				placeholder={ inp.GetOpts().GetPlace() }
+				required={ inp.GetOpts().GetRequired() }
+				spellcheck={ inp.GetOpts().GetSpellchecked() }
+				autofocus={ inp.GetOpts().GetFocused() }
+				class="peer flex flex-1 my-1 mx-2 pl-2 rounded-md
+				font-sans text-white bg-transparent overflow-x-scroll
+				placeholder:invisible placeholder:text-nowrap
+				focus:empty:placeholder:visible"
+			/>
+			<label
+				for={ inp.GetId() }
+				class="absolute top-[-0.6rem] left-[0.8rem] z-[1] py-0 px-[0.2rem]
+				text-[0.8rem] leading-3 text-slate-300 text-nowrap 
+				overflow-hidden cursor-text bg-inherit w-fit
+
+				peer-placeholder-shown:text-[1.2rem] peer-placeholder-shown:leading-6  
+				peer-placeholder-shown:top-[0.6rem] peer-placeholder-shown:left-0 peer-placeholder-shown:px-[1rem] 
+				peer-placeholder-shown:w-11/12
+
+				group-hover:text-slate-400
+
+				peer-focus:text-slate-50 peer-focus:text-[0.8rem] 
+				peer-focus:leading-3 peer-focus:w-fit peer-focus:px-[0.2rem]
+				peer-focus:left-[0.8rem] peer-focus:top-[-0.6rem]"
+			>{ inp.GetLabel() }</label>
+			<div
+				class="flex z-[1]
+				peer-valid:visible peer-invalid:hidden
+				py-1 pr-1 text-nowrap"
+			>
+				if inp.GetOpts().GetButton() != nil {
+					@ButtonHandler(form, *inp.GetOpts().GetButton())
+				}
+			</div>
+		</div>
+		<p class="text-sm">{ inp.GetOpts().GetHint() }</p>
+		<div id={ inp.GetName() + "-error" }></div>
+	</div>
+}

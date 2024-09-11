@@ -1,0 +1,42 @@
+package pages
+
+import (
+	"github.com/kevin07696/ecommerce/templates/layouts"
+	"github.com/kevin07696/ecommerce/templates/models"
+	"github.com/kevin07696/ecommerce/templates/partials"
+)
+
+templ LoginForm() {
+	@layouts.Start("Login") {
+		@layouts.Grid("bg-slate-700") {
+			@layouts.GridMiddle() {
+				<div class="box-border border-2 border-solid border-white p-4 text-white">
+					<form class="*:mb-2" id="login" enctype="application/x-www-form-urlencoded" hx-post="/api/login" hx-swap="innerHTML" hx-target="#error">
+						@partials.DefaultInput("login", "bg-slate-700", models.NewInput("user_id", "user_id", "Username",
+							models.WithFill("username"),
+							models.WithRequired(),
+							models.WithFocus(),
+							models.WithInpTyp("text"),
+							models.WithPlace("Username, or email"),
+							models.WithButton("Send OTP",
+								models.WithBtnRequest(
+									models.WithParams("user_id"),
+									models.WithRequest("POST", "/api/login-otp"),
+									models.WithSwap("innerHTML"),
+									models.WithTarget("#error"),
+								),
+								models.WithBtnTempl("solid-rounded"),
+								models.WithBtnStyle("active:bg-slate-100 hover:bg-slate-200"),
+							)))
+						@partials.DefaultInput("login", "bg-slate-700", models.NewInput("otp", "otp", "One Time Pass",
+							models.WithPlace("12345678"),
+							models.WithRequired(),
+							models.WithPattern(".{8}")))
+						@partials.Basic("login", models.NewButton("Login", models.WithBtnStyle("hover:bg-slate-600 active:bg-slate-800")))
+						<p id="error"></p>
+					</form>
+				</div>
+			}
+		}
+	}
+}

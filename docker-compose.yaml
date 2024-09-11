@@ -1,0 +1,47 @@
+services:
+  ecommerce:
+    image: ecommerce:${VERSION}
+    container_name: ecommerce_${APP_ENV}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - ${HOST_PORT}:${PORT}
+    depends_on:
+      - redis
+      - mongo
+    networks:
+      - build-network
+  mongo:
+    image: mongo:latest
+    container_name: mongo_${APP_ENV}
+    ports:
+      - ${MONGO_HOST_PORT}:${MONGO_PORT}
+    volumes: 
+      - mongodb-data:/data/db
+    networks:
+      - build-network
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express_${APP_ENV}
+    ports:
+      - ${MONGO_EXPRESS_HOST_PORT}:${MONGO_EXPRESS_PORT}
+    depends_on:
+      - mongo
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo_${APP_ENV}
+      - ME_CONFIG_MONGODB_PORT=${MONGO_PORT}
+    networks:
+      - build-network
+  redis:
+    image: redis:latest
+    container_name: redis_${APP_ENV}
+    ports:
+      - ${REDIS_HOST_PORT}:${REDIS_PORT}
+    networks:
+      - build-network
+networks:
+  build-network:
+volumes:
+  mongodb-data:
+    driver: local

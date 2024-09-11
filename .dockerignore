@@ -1,0 +1,14 @@
+.git/
+.idea/
+.vscode/
+bin/
+node_modules/
+usecases/
+.air.toml
+.gitignore
+*.log
+*.tmp
+*.swp
+*_mock.go
+*_test.go
+Makefile
