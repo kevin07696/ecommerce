@@ -17,15 +17,9 @@ func TestNewEmailClient(t *testing.T) {
 		ExpectedError error
 	}{
 		{
-			Name:      "Succeeds",
-			Host:      "smtp.domain.tld",
-			Opts:      []mail.Option{},
-		},
-		{
-			Name:          "Fails_EmptyEmailAddr",
-			Host:          "smtp.domain.tld",
-			Opts:          []mail.Option{},
-			ExpectedError: fmt.Errorf(email.NewEmailClientErrHeader, email.ErrMsgEmptyEmailAddr),
+			Name: "Succeeds",
+			Host: "smtp.domain.tld",
+			Opts: []mail.Option{},
 		},
 		{
 			Name:          "Fails_EmptyHost",
@@ -39,7 +33,7 @@ func TestNewEmailClient(t *testing.T) {
 		t.Run(tc[i].Name, func(t *testing.T) {
 			_, err := email.NewEmailClient(tc[i].Host, tc[i].Opts...)
 
-			assert.Equal(t, err, tc[i].ExpectedError)
+			assert.Equal(t, tc[i].ExpectedError, err)
 		})
 	}
 

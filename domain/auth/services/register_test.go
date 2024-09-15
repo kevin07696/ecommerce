@@ -352,6 +352,9 @@ func TestRegisterUser(t *testing.T) {
 			var sessionManager port.ISessionManager
 			var cacher port.ICache = mocks.MockCache{
 				GetMock: tc[i].GetCacheMock,
+				DeleteMock: func(ctx context.Context, key string) error {
+					return nil
+				},
 			}
 			var emailer port.IEmail
 			var repositor port.IRepository = mocks.MockRepository{

@@ -138,7 +138,7 @@ func TestLogin(t *testing.T) {
 			ExpectedError: domain.ValidationError(services.ErrMsgInvalidUserId),
 		},
 		{
-			Name: "FailsCache_UsernameInternalServer",
+			Name:    "FailsCache_UsernameInternalServer",
 			Request: services.LoginUserReq{UserId: "user", OTP: "12345678"},
 			NewEmailMock: func(email string) (models.Email, error) {
 				return models.Email{}, models.ErrInvalidEmail
@@ -230,7 +230,7 @@ func TestLogin(t *testing.T) {
 			ExpectedError: domain.CustomizeError(domain.ErrUnauthorized, services.ErrMsgUnauthorized),
 		},
 		{
-			Name: "FailsRepo_UsernameNotFound",
+			Name:    "FailsRepo_UsernameNotFound",
 			Request: services.LoginUserReq{UserId: "user", OTP: "12345678"},
 			NewEmailMock: func(email string) (models.Email, error) {
 				return models.Email{}, models.ErrInvalidEmail
@@ -247,7 +247,7 @@ func TestLogin(t *testing.T) {
 			ExpectedError: domain.CustomizeError(domain.ErrNotFound, services.ErrMsgUserIdNotFound),
 		},
 		{
-			Name: "FailsRepo_UsernameInternalServer",
+			Name:    "FailsRepo_UsernameInternalServer",
 			Request: services.LoginUserReq{UserId: "user", OTP: "12345678"},
 			NewEmailMock: func(email string) (models.Email, error) {
 				return models.Email{}, models.ErrInvalidEmail
@@ -262,10 +262,9 @@ func TestLogin(t *testing.T) {
 				return models.User{}, domain.ErrInternalServer
 			},
 			ExpectedError: domain.CustomizeError(domain.ErrInternalServer, services.ErrMsgInternalServer),
-
 		},
 		{
-			Name: "FailsRepo_EmailNotFound",
+			Name:    "FailsRepo_EmailNotFound",
 			Request: services.LoginUserReq{UserId: "local+sub@domain.sub.tld", OTP: "12345678"},
 			NewEmailMock: func(email string) (models.Email, error) {
 				return models.Email{
@@ -286,7 +285,7 @@ func TestLogin(t *testing.T) {
 			ExpectedError: domain.CustomizeError(domain.ErrNotFound, services.ErrMsgUserIdNotFound),
 		},
 		{
-			Name: "FailsRepo_EmailInternalServer",
+			Name:    "FailsRepo_EmailInternalServer",
 			Request: services.LoginUserReq{UserId: "local+sub@domain.sub.tld", OTP: "12345678"},
 			NewEmailMock: func(email string) (models.Email, error) {
 				return models.Email{
@@ -313,16 +312,19 @@ func TestLogin(t *testing.T) {
 			var sessionManager port.ISessionManager
 			var cacher port.ICache = mocks.MockCache{
 				GetMock: tc[i].GetCacheMock,
+				DeleteMock: func(ctx context.Context, key string) error {
+					return nil
+				},
 			}
 			var emailer port.IEmail
 			var repositor port.IRepository = mocks.MockRepository{
-				GetUserByEmailMock: tc[i].GetUserByEmailMock,
+				GetUserByEmailMock:    tc[i].GetUserByEmailMock,
 				GetUserByUsernameMock: tc[i].GetUserByUsernameMock,
 			}
 			var modeler models.IModels = &mocks.MockModels{
-				NewEmailMock: tc[i].NewEmailMock,
+				NewEmailMock:    tc[i].NewEmailMock,
 				NewUsernameMock: tc[i].NewUsernameMock,
-				NewOTPMock:   tc[i].NewOTPMock,
+				NewOTPMock:      tc[i].NewOTPMock,
 			}
 			service := services.NewService(repositor, sessionManager, cacher, emailer, modeler)
 
