@@ -22,7 +22,7 @@ dcdown:
 
 template:
 	@npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css
-	@templ generate view
+	@templ generate
 
 tailwind:
 	@npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch
