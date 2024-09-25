@@ -42,7 +42,7 @@ Install TailwindCSS and other npm dependencies you can run:
 ```bash
 npm install
 ```
-To install TailwindCSS for your own project[:link:](https://tailwindcss.com/docs/installation)
+To install TailwindCSS for your own project [:link:](https://tailwindcss.com/docs/installation).
 ## Usage
 
 To generate or regenerate templ files:
