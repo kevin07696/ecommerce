@@ -1,6 +1,6 @@
-# An eCommerce Project
+# An Ecommerce Project
 
-An eCommerce project working towards preventing spam reviewers and vendors.
+A project working towards preventing spam reviewers and vendors. This is also an experiment in using the HATEOAS (Hypermedia as the Engine of Application State) model in a high-traffic system like e-commerce.
 
 ## Tech
 Stack: Golang, HMMX, Templ, TailwindCSS, MongoDB, Docker
