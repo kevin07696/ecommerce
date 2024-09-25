@@ -34,7 +34,7 @@ docker-compose up
 ```bash
 docker-compose up -d
 ```
-## Development
+## Contribution
 Docs are coming soon.
 
 ### Setup
