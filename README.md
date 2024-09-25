@@ -23,10 +23,10 @@ docker-compose build
 docker-compose up
 ```
   - To run in detach mode you can add `--detach` or `-d` for short:
-  ```bash
+```bash
 docker-compose up -d
 ```
-## Contributing
+## Development
 Docs are coming soon.
 
 ### Setup
@@ -42,6 +42,16 @@ Install TailwindCSS and other npm dependencies you can run:
 ```bash
 npm install
 ```
+## Usage
+
+To generate or regenerate templ files:
+
+```bash
+templ genrate
+```
+
+For other commands checkout my Makefile.
+
 #### Troubleshooting
 - If you run into the issue `command not found` when running `templ` you need to find the path of the go package. If you use Linux, try running:
   ```bash
