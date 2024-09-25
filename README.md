@@ -2,6 +2,14 @@
 
 An eCommerce project working towards preventing spam reviewers and vendors.
 
+## Tech
+Stack: Golang, HMMX, Templ, TailwindCSS, MongoDB, Docker
+Architectural Patterns: Port and Adapters Model, Dependency Injection, Interface-Based Design
+## Features
+Auth Service:
+- Login with Email Verification
+- Signup with Email Verification
+
 ## Getting Started
 ### Prerequisites
 - [Golang](https://go.dev/doc/install)
