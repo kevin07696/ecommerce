@@ -1,4 +1,4 @@
-# An eCommerce MVP
+# An eCommerce Project
 
 An eCommerce project working towards preventing spam reviewers and vendors.
 
