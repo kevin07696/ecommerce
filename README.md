@@ -47,7 +47,7 @@ npm install
 To generate or regenerate templ files:
 
 ```bash
-templ genrate
+templ generate
 ```
 
 For other commands checkout my Makefile.
