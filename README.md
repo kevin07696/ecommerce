@@ -4,9 +4,9 @@ An eCommerce project working towards preventing spam reviewers and vendors.
 
 ## Getting Started
 ### Prerequisites
-- [Golang](https://go.dev/doc/install){target="_blank" rel="noopener noreferrer"}
-- Node.js on [Linux & Mac](https://github.com/nvm-sh/nvm){target="_blank" rel="noopener noreferrer"} | [Windows](https://nodejs.org/en){target="_blank" rel="noopener noreferrer"}
-- [Docker Compose](https://docs.docker.com/compose/){target="_blank" rel="noopener noreferrer"}
+- [Golang](https://go.dev/doc/install)
+- Node.js on [Linux & Mac](https://github.com/nvm-sh/nvm) | [Windows](https://nodejs.org/en)
+- [Docker Compose](https://docs.docker.com/compose/)
 
 ### Configuration
 In the `.env` file, you can find the global environmental variables I use.
@@ -30,7 +30,7 @@ docker-compose up -d
 Docs are coming soon.
 
 ### Setup
-Install [Templ](https://templ.guide/quick-start/installation){target="_blank" rel="noopener noreferrer"} by running:
+Install [Templ](https://templ.guide/quick-start/installation) by running:
 ```bash
 go install github.com/a-h/templ/cmd/templ@latest
 ```
@@ -42,7 +42,7 @@ Install TailwindCSS and other npm dependencies you can run:
 ```bash
 npm install
 ```
-To install TailwindCSS for your own project [:link:](https://tailwindcss.com/docs/installation){target="_blank" rel="noopener noreferrer"}
+To install TailwindCSS for your own project [:link:](https://tailwindcss.com/docs/installation)
 ## Usage
 
 To generate or regenerate templ files:
