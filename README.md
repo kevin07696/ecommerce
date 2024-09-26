@@ -34,6 +34,10 @@ docker-compose up
 ```bash
 docker-compose up -d
 ```
+3. You can run links from [routes](https://github.com/kevin07696/ecommerce/blob/develop/adapters/driving/http/auth/routes.go):
+ ```bash
+ http://localhost:8080/login    
+ ```
 ## Contribution
 Docs are coming soon.
 
