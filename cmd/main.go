@@ -99,14 +99,23 @@ func main() {
 	}
 	var userCache up.ICache = cache.NewRedisAdapter(&redisOpts)
 
-	var sessionOpts sessionRedis.Options = sessionRedis.Options{
+	var storeOpts sessionRedis.Options = sessionRedis.Options{
 		Addr: redisAddr,
 		DB:   0,
 	}
-	var store = sess.NewRedisStore(&sessionOpts)
-	var sessionManager up.ISessionManager = sess.NewSessionManager(session.SetStore(store),
-		session.SetCookieLifeTime(30), session.SetCookieName("auth-session"),
-		session.SetSecure(true), session.SetEnableSetCookie(true), session.SetExpired(30))
+	var store = sess.NewRedisStore(&storeOpts)
+	var customSessionOpts = []sess.Option{
+		sess.SetRefresh(24*3600),
+	}
+	var sessionOpts = []session.Option{
+		session.SetStore(store),
+		session.SetCookieLifeTime(30), 
+		session.SetCookieName("auth-session"),
+		session.SetSecure(true), 
+		session.SetEnableSetCookie(true), 
+		session.SetExpired(30),
+	}
+	var sessionManager up.ISessionManager = sess.NewSessionManager(customSessionOpts, sessionOpts...)
 
 	emailPort, err := strconv.ParseUint(env["EMAIL_PORT"], 10, 16)
 	if err != nil {

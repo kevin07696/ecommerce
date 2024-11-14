@@ -9,6 +9,8 @@ import (
 	"github.com/kevin07696/ecommerce/domain/auth/models"
 )
 
+var userKey = "user"
+
 type CreateSessionReq struct {
 	Username models.Username
 }
@@ -18,7 +20,7 @@ func (s *Service) CreateSession(ctx context.Context, w http.ResponseWriter, r *h
 	if err != nil {
 		return domain.CustomizeError(domain.ErrInternalServer, ErrMsgInternalServer)
 	}
-	session.Set("user", req.Username)
+	session.Set(userKey, req.Username)
 	if err := session.Save(); err != nil {
 		log.Printf("Failed to save session: %v: %v", domain.ErrInternalServer, err)
 		return domain.CustomizeError(domain.ErrInternalServer, ErrMsgInternalServer)
