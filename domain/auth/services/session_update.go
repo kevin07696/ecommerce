@@ -22,7 +22,7 @@ func (s *Service) UpdateSession(ctx context.Context, w http.ResponseWriter, r *h
 		return domain.CustomizeError(domain.ErrUnauthorized, ErrMsgUnauthorized)
 	}
 	if s.sessionManager.NeedsRefresh(session) {
-		session, err := s.sessionManager.Refresh(ctx, w, r)
+		session, err = s.sessionManager.Refresh(ctx, w, r)
 		if err != nil {
 			return domain.CustomizeError(domain.ErrInternalServer, ErrMsgInternalServer)
 		}

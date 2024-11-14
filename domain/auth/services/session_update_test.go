@@ -18,52 +18,128 @@ import (
 func TestUpdateSession(t *testing.T) {
 	tc := []struct {
 		Name          string
-		StartMock     func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error)
+		sessionMock   mocks.MockSessionManager
 		ExpectedError *domain.CustomError
 	}{
 		{
 			Name: "Succeeds",
-			StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
-				return &mocks.MockSession{
-					GetMock: func(key string) (interface{}, bool) {
-						return nil, true
-					},
-					SaveMock: func() error {
-						return nil
-					},
-				}, nil
+			sessionMock: mocks.MockSessionManager{
+				StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return &mocks.MockSession{
+						GetMock: func(key string) (interface{}, bool) {
+							return nil, true
+						},
+						SaveMock: func() error {
+							return nil
+						},
+					}, nil
+				},
+				NeedsRefreshMock: func(session session.Store) bool {
+					return false
+				},
 			},
 			ExpectedError: nil,
 		},
 		{
 			Name: "FailsStartSession_InternalServer",
-			StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
-				return nil, domain.ErrInternalServer
+			sessionMock: mocks.MockSessionManager{
+				StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return nil, domain.ErrInternalServer
+				},
 			},
 			ExpectedError: domain.CustomizeError(domain.ErrInternalServer, services.ErrMsgInternalServer),
 		},
 		{
 			Name: "FailsGetSession_Unauthorized",
-			StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
-				return &mocks.MockSession{
-					GetMock: func(key string) (interface{}, bool) {
-						return nil, false
-					},
-				}, nil
+			sessionMock: mocks.MockSessionManager{
+				StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return &mocks.MockSession{
+						GetMock: func(key string) (interface{}, bool) {
+							return nil, false
+						},
+					}, nil
+				},
+				DeleteMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+					return nil
+				},
 			},
 			ExpectedError: domain.CustomizeError(domain.ErrUnauthorized, services.ErrMsgUnauthorized),
 		},
 		{
+			Name: "FailsDeleteSession_InternalServer",
+			sessionMock: mocks.MockSessionManager{
+				StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return &mocks.MockSession{
+						GetMock: func(key string) (interface{}, bool) {
+							return nil, false
+						},
+					}, nil
+				},
+				DeleteMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
+					return domain.ErrInternalServer
+				},
+			},
+			ExpectedError: domain.CustomizeError(domain.ErrInternalServer, services.ErrMsgInternalServer),
+		},
+		{
+			Name: "RefreshSession_Succeeds",
+			sessionMock: mocks.MockSessionManager{
+				StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return &mocks.MockSession{
+						GetMock: func(key string) (interface{}, bool) {
+							return nil, true
+						},
+					}, nil
+				},
+				NeedsRefreshMock: func(session session.Store) bool {
+					return true
+				},
+				RefreshMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return &mocks.MockSession{
+						SetMock: func(key string, value interface{}) {},
+						SaveMock: func() error {
+							return nil
+						},
+					}, nil
+				},
+			},
+			ExpectedError: nil,
+		},
+		{
+			Name: "FailsRefreshSession_InternalServer",
+			sessionMock: mocks.MockSessionManager{
+				StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return &mocks.MockSession{
+						GetMock: func(key string) (interface{}, bool) {
+							return &mocks.MockSession{}, true
+						},
+					}, nil
+				},
+				NeedsRefreshMock: func(session session.Store) bool {
+					return true
+				},
+				RefreshMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return nil, domain.ErrInternalServer
+				},
+			},
+			ExpectedError: domain.CustomizeError(domain.ErrInternalServer, services.ErrMsgInternalServer),
+		},
+		{
 			Name: "FailsSaveSession_InternalServer",
-			StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
-				return &mocks.MockSession{
-					GetMock: func(key string) (interface{}, bool) {
-						return nil, true
-					},
-					SaveMock: func() error {
-						return errors.New("")
-					},
-				}, nil
+			sessionMock: mocks.MockSessionManager{
+				StartMock: func(ctx context.Context, w http.ResponseWriter, r *http.Request) (session.Store, error) {
+					return &mocks.MockSession{
+						GetMock: func(key string) (interface{}, bool) {
+							return nil, true
+						},
+						SaveMock: func() error {
+							return errors.New("")
+						},
+					}, nil
+				},
+				NeedsRefreshMock: func(session session.Store) bool {
+					return false
+				},
 			},
 			ExpectedError: domain.CustomizeError(domain.ErrInternalServer, services.ErrMsgInternalServer),
 		},
@@ -71,9 +147,7 @@ func TestUpdateSession(t *testing.T) {
 
 	for i := range tc {
 		t.Run(tc[i].Name, func(t *testing.T) {
-			var sessionManager port.ISessionManager = &mocks.MockSessionManager{
-				StartMock: tc[i].StartMock,
-			}
+			var sessionManager port.ISessionManager = &tc[i].sessionMock
 			var cacher port.ICache
 			var emailer port.IEmail
 			var repositor port.IRepository
