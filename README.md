@@ -1,6 +1,6 @@
-# An Ecommerce Project
+# An GOTH Stack Auth API
 
-This is a project using the HATEOAS (Hypermedia as the Engine of Application State) model to build an ecommerce website.
+This is a project using the HATEOAS (Hypermedia as the Engine of Application State) model and GOTH stack to build a login web page. This project uses session-based authentication since state is managed by the server.
 
 ## Tech
 Stack: Golang, HTMX, Templ, TailwindCSS, MongoDB, Docker
