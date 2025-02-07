@@ -1,6 +1,6 @@
-# An GOTH Stack Auth API
+# Email Authentication
 
-This is a project using the HATEOAS (Hypermedia as the Engine of Application State) model and GOTH stack to build a login web page. This project uses session-based authentication since state is managed by the server.
+This is a project to logs in the user by email and provide a session token in a http-cookie. This api uses the HATEOAS (Hypermedia as the Engine of Application State) model and GOTH stack to render a login web page.
 
 ## Tech
 Stack: Golang, HTMX, Templ, TailwindCSS, MongoDB, Docker
