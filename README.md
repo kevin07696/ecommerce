@@ -1,9 +1,9 @@
 # An Ecommerce Project
 
-A project working towards preventing spam reviewers and vendors. This is also an experiment in using the HATEOAS (Hypermedia as the Engine of Application State) model in a high-traffic system like e-commerce.
+This is a project using the HATEOAS (Hypermedia as the Engine of Application State) model to build an ecommerce website.
 
 ## Tech
-Stack: Golang, HMMX, Templ, TailwindCSS, MongoDB, Docker
+Stack: Golang, HTMX, Templ, TailwindCSS, MongoDB, Docker
 Architectural Patterns: Port and Adapters Model, Dependency Injection, Interface-Based Design
 ## Features
 Auth Service:
